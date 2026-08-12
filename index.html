@@ -122,19 +122,35 @@ footer{border-top:1px solid var(--line);margin-top:40px;padding:18px;text-align:
 <script src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js"></script>
 <script>
 const DOCS = [
-  { id:'guide',     file:'content/guide.md',     nav:'The Guide',
+  { id:'guide',     file:'guide.md',     nav:'The Guide',
     title:'The Virginia Road Guide',
     blurb:'Virginia law and parent guidance for every stage, from learner\u2019s permit through age 21.' },
-  { id:'checklist', file:'content/checklist.md', nav:'Setup Checklist',
+  { id:'checklist', file:'checklist.md', nav:'Setup Checklist',
     title:'20 Minutes That Could Save Your Teen\u2019s Life',
     blurb:'Crash detection and speed controls on the phone and car you already own.' },
-  { id:'tesla',     file:'content/tesla.md',     nav:'Tesla Settings',
+  { id:'tesla',     file:'tesla.md',     nav:'Tesla Settings',
     title:'Tesla Settings for a Teen Driver',
     blurb:'Parental Controls, lane departure, and the one setting that switches everything off.' },
-  { id:'agreement', file:'content/agreement.md', nav:'Driving Agreement',
+  { id:'agreement', file:'agreement.md', nav:'Driving Agreement',
     title:'Parent-Teen Driving Agreement',
     blurb:'A printable agreement to fill in and sign together before the first solo drive.' }
 ];
+
+// Markdown files may sit in content/ or beside index.html. Try both.
+const FOLDERS = ['content/', ''];
+
+async function loadDoc(file){
+  const tried = [];
+  for (const dir of FOLDERS){
+    const url = dir + file;
+    tried.push(url);
+    try {
+      const res = await fetch(url + '?v=' + Date.now());
+      if (res.ok) return await res.text();
+    } catch (e) { /* try next location */ }
+  }
+  throw new Error('Not found. Tried: ' + tried.join(', '));
+}
 
 const $ = s => document.querySelector(s);
 const cache = {};
@@ -166,13 +182,14 @@ async function renderDoc(id){
   if (!cache[id]){
     $('#main').innerHTML = '<p class="loading">Loading...</p>';
     try {
-      const res = await fetch(doc.file + '?v=' + Date.now());
-      if (!res.ok) throw new Error(res.status);
-      cache[id] = await res.text();
+      cache[id] = await loadDoc(doc.file);
     } catch (e) {
       $('#main').innerHTML =
         `<div class="err"><p><strong>Could not load this page.</strong></p>
-         <p>Check your connection and reload. If it keeps failing, text 804-200-9350.</p></div>`;
+         <p>The file <code>${doc.file}</code> is missing from the site. It should sit either
+         beside <code>index.html</code> or inside a <code>content</code> folder.</p>
+         <p style="font-size:13px">${e.message}</p>
+         <p>If you are not the site owner, text 804-200-9350.</p></div>`;
       return;
     }
   }
