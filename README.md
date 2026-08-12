@@ -11,38 +11,6 @@ No build step, no dependencies to install, no server. Plain HTML plus four markd
 
 ---
 
-## Publishing this (10 minutes, one time)
-
-**1. Create the repository**
-
-Go to github.com and click **New repository**. Name it `teen-driver-safety`. Set it **Public**. Do not add a README, since this folder already has one. Click **Create repository**.
-
-**2. Upload the files**
-
-On the new empty repository page, click **uploading an existing file**. Drag in:
-
-- `index.html`
-- `README.md`
-- the whole `content` folder
-
-Then click **Commit changes**.
-
-**3. Turn on GitHub Pages**
-
-Go to **Settings** (top of the repo) then **Pages** in the left sidebar. Under "Build and deployment," set Source to **Deploy from a branch**, branch to **main**, folder to **/ (root)**. Click **Save**.
-
-**4. Wait about a minute, then open your site**
-
-The URL will be:
-
-```
-https://<your-github-username>.github.io/teen-driver-safety/
-```
-
-GitHub shows the link at the top of the Pages settings screen once it is live. Open it on your phone to confirm it looks right.
-
----
-
 ## Updating a document (the whole point)
 
 Everything readers see comes from the four files in `content/`. To fix a typo or update a law:
